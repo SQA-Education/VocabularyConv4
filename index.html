@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SQA Education · Conversation Vocabulary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     SQA Education — Conversation Vocabulary Study Tool (Term 5 · C1+)
+     Single-file HTML. Built for GitHub Pages hosting.
+     ------------------------------------------------------------
+     HOW TO ADD / EDIT VOCABULARY:  see the SETS array in the
+     <script> block far below. Each set is plain data — no code
+     knowledge needed to add words.
+     ------------------------------------------------------------
+     IMAGES: image-based sets reference files in an  images/
+     folder next to this HTML file. Until images exist, the tool
+     shows the word itself as a clear text fallback, so every
+     mode still works today.
+     ------------------------------------------------------------
+     GOOGLE FORM: see the FORM_CONFIG block. Paste the Conversation Track 3 Form's
+     entry IDs there to turn on score reporting. Until then the
+     tool runs fully; it just skips the report step.
+     ============================================================ */
+
+  :root {
+    --bg: #f4f1ea;
+    --ink: #1d2421;
+    --paper: #fffdf7;
+    --line: #d8d2c2;
+    --moss: #2f5d4e;
+    --moss-lt: #e3ede8;
+    --clay: #bf5a36;
+    --gold: #caa24a;
+    --dim: #7a7568;
+    --slate: #516b8b;
+    --slate-lt: #e7ecf2;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    background-image:
+      radial-gradient(circle at 100% 0%, rgba(202,162,74,.10), transparent 45%),
+      radial-gradient(circle at 0% 100%, rgba(47,93,78,.08), transparent 42%);
+    min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--gold); color: var(--ink); }
+  button { font-family: var(--font-body); cursor: pointer; border: none;
+    transition: transform .12s ease, box-shadow .14s ease, background .15s ease, color .15s ease, border-color .15s ease; }
+  button:active { transform: translateY(1px); }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px 64px; }
+
+  header {
+    border-bottom: 1.5px solid var(--line);
+    padding: 22px 22px 16px;
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    max-width: 760px; margin: 0 auto;
+  }
+  .logo {
+    font-family: var(--font-display); font-size: 24px; font-weight: 600;
+    letter-spacing: -.01em; background: none; color: var(--ink); padding: 0;
+  }
+  .crumb { color: var(--dim); font-size: 13px; font-weight: 500; }
+  .pill {
+    margin-left: auto; font-size: 12px; color: var(--moss);
+    background: var(--moss-lt); padding: 5px 11px; border-radius: 20px; font-weight: 600;
+  }
+
+  h1.page {
+    font-family: var(--font-display); font-size: 33px; font-weight: 600;
+    line-height: 1.15; letter-spacing: -.02em; margin: 32px 0 8px;
+  }
+  p.lead { color: var(--dim); font-size: 15px; margin-bottom: 26px; max-width: 540px; }
+
+  /* set list */
+  .set-card {
+    width: 100%; text-align: left; background: var(--paper);
+    border: 1.5px solid var(--line); border-radius: 16px; padding: 18px 20px;
+    display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.02);
+  }
+  .set-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(29,36,33,.10); border-color: var(--moss); }
+  .set-badge {
+    width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #fff;
+  }
+  .set-name { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .set-meta { color: var(--dim); font-size: 13px; margin-top: 2px; }
+  .set-arrow { margin-left: auto; font-size: 20px; font-weight: 600; color: var(--moss); }
+
+  /* mode chooser */
+  .mode-grid { display: grid; gap: 12px; }
+  .mode-card {
+    width: 100%; text-align: left; background: var(--paper);
+    border: 1.5px solid var(--line); border-radius: 15px; padding: 18px 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .mode-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(29,36,33,.10); }
+  .mode-letter {
+    width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 19px; font-weight: 700;
+  }
+  .mode-name { font-family: var(--font-display); font-size: 17px; font-weight: 600; }
+  .mode-desc { color: var(--dim); font-size: 13px; margin-top: 2px; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; }
+  .topbar .label { font-size: 12.5px; color: var(--dim); font-weight: 600; }
+  .exit { background: none; color: var(--dim); font-size: 13px; font-weight: 600; padding: 4px; }
+  .exit:hover { color: var(--clay); }
+
+  .bar { height: 6px; background: var(--line); border-radius: 6px; margin-top: 12px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--moss); border-radius: 6px; transition: width .35s ease; }
+
+  /* flashcard */
+  .flip-outer { perspective: 1200px; margin-top: 24px; cursor: pointer; }
+  .flip { position: relative; width: 100%; height: 280px;
+    transform-style: preserve-3d; transition: transform .55s cubic-bezier(.2,.7,.2,1); }
+  .flip.on { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 20px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 0 32px; }
+  .face.front { background: var(--paper); border: 1.5px solid var(--line); box-shadow: 0 8px 26px rgba(29,36,33,.08); }
+  .face.back { background: var(--moss); transform: rotateY(180deg); box-shadow: 0 8px 26px rgba(29,36,33,.14); }
+  .kicker { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .term-lg { font-family: var(--font-display); font-size: 38px; font-weight: 600; margin-top: 10px; text-align: center; }
+  .def-lg { font-family: var(--font-display); font-size: 23px; font-weight: 500; margin-top: 12px;
+    color: #fff; text-align: center; line-height: 1.4; }
+  .def-num { font-family: var(--font-display); font-weight: 700; font-size: 96px;
+    color: #fff; text-align: center; line-height: 1; margin-top: 8px; }
+  .card-img { max-width: 200px; max-height: 150px; margin-top: 12px; border-radius: 12px; }
+  /* inline SVG illustrations */
+  .art { margin-top: 12px; }
+  .art svg { width: 100% !important; height: 100% !important; display: block; max-width: 100%; max-height: 100%; }
+  .face.back .art { background: #fff; border-radius: 12px; padding: 6px; }
+  /* color swatches (Colors set) */
+  .swatch { display: inline-block; border-radius: 12px; margin-top: 12px;
+    box-shadow: 0 2px 8px rgba(29,36,33,.15); }
+  .tile.def .art, .tile.def .swatch { margin-top: 0; }
+  .opt .art, .opt .swatch { margin-top: 0; vertical-align: middle; }
+
+  .row { display: flex; gap: 12px; margin-top: 22px; }
+  .btn { flex: 1; padding: 15px; border-radius: 13px; font-size: 15px; font-weight: 600; }
+  .btn-know { background: var(--moss); color: #fff; }
+  .btn-learn { background: var(--paper); border: 1.5px solid var(--clay); color: var(--clay); }
+  .btn-dark { background: var(--ink); color: #fff; width: 100%; padding: 15px; border-radius: 13px;
+    font-size: 15px; font-weight: 600; margin-top: 16px; }
+
+  /* quiz */
+  .qcard { margin-top: 24px; background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: 18px; padding: 24px 22px; }
+  .qword { font-family: var(--font-display); font-size: 34px; font-weight: 600; margin: 8px 0 20px; }
+  .opts { display: grid; gap: 10px; }
+  .opt { text-align: left; padding: 13px 15px; border-radius: 11px; background: var(--bg);
+    border: 1.5px solid var(--line); color: var(--ink); font-size: 14.5px; font-weight: 500; line-height: 1.4; }
+  .opt.correct { background: var(--moss-lt); border-color: var(--moss); color: var(--moss); }
+  .opt.wrong { background: #f6e3dc; border-color: var(--clay); color: var(--clay); }
+  .opt .tick { float: right; }
+  .speak { margin-top: 16px; background: var(--moss-lt); color: var(--moss); border: 1.5px solid var(--moss);
+    padding: 9px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .speak:hover { background: var(--moss); color: #fff; }
+  .speak:active { transform: scale(.97); }
+  .listen-big { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    margin: 16px auto 2px; background: var(--slate); color: #fff; border: none; border-radius: 18px;
+    width: 148px; height: 116px; font-size: 42px; line-height: 1; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(81,107,139,.25); }
+  .listen-big span { font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+  .listen-big:hover { filter: brightness(1.07); }
+  .listen-big:active { transform: scale(.97); }
+
+  /* matching */
+  .match-grid { display: flex; gap: 12px; margin-top: 18px; }
+  .match-col { display: grid; gap: 9px; flex: 1; align-content: start; }
+  .tile { padding: 13px 12px; border-radius: 11px; border: 1.5px solid var(--line);
+    background: var(--paper); color: var(--ink); line-height: 1.35; }
+  .tile.term { font-family: var(--font-display); font-size: 16px; font-weight: 600; text-align: center; }
+  .tile.def { font-size: 12.5px; font-weight: 500; text-align: left; min-height: 56px; }
+  .tile.sel { background: var(--moss); color: #fff; border-color: var(--moss); }
+  .tile.matched { background: var(--moss-lt); color: rgba(47,93,78,.45); opacity: .55; cursor: default; }
+  .tile.bad { background: #f6e3dc; color: var(--clay); border-color: var(--clay); }
+
+  /* result */
+  .result { max-width: 460px; margin: 56px auto 0; text-align: center; }
+  .result .check { width: 62px; height: 62px; border-radius: 50%; background: var(--moss);
+    margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #fff; }
+  .result h2 { font-family: var(--font-display); font-size: 27px; font-weight: 600; margin-bottom: 10px; }
+  .result p { color: var(--dim); font-size: 15px; margin-bottom: 4px; }
+
+  .name-input {
+    width: 100%; padding: 13px 15px; border-radius: 11px; border: 1.5px solid var(--line);
+    font-size: 15px; font-family: var(--font-body); background: var(--paper); color: var(--ink); margin-top: 6px;
+  }
+  .name-input:focus { outline: 2px solid var(--moss); outline-offset: 1px; }
+
+  .note {
+    margin-top: 28px; padding: 13px 15px; background: var(--moss-lt);
+    border: 1px solid var(--line); border-radius: 12px; font-size: 12.5px;
+    color: var(--moss); line-height: 1.5;
+  }
+  .reset { margin-top: 18px; background: none; color: var(--dim); font-size: 12.5px;
+    text-decoration: underline; text-underline-offset: 3px; padding: 2px; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .rise { animation: rise .4s ease both; }
+
+  @media (max-width: 480px) {
+    h1.page { font-size: 27px; }
+    .term-lg { font-size: 32px; }
+    .qword { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="logo" onclick="go({name:'home'})">SQA Education</button>
+  <span class="crumb">Conversation · Vocabulary Practice</span>
+  <span class="pill" id="head-pill">Level C1+</span>
+</header>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* ================================================================
+   FORM_CONFIG — Google Form score reporting
+   ----------------------------------------------------------------
+   To turn on teacher reporting:
+   1. Create a NEW Conversation Track 3 Google Form with 3 short-answer questions:
+        Student name | Set | Score
+   2. Open the form, click the three-dot menu > "Get pre-filled link"
+   3. Fill dummy answers, copy the link, read the entry.XXXX IDs
+   4. Paste the form ID and the three entry IDs below, set enabled:true
+   Until enabled is true, the tool runs fully and simply skips
+   the reporting step.
+   ================================================================ */
+const FORM_CONFIG = {
+  enabled: false,                          // <-- set to true after pasting the Conversation Track 3 form ID
+  formId: "PASTE_CONVERSATION_TRACK3_FORM_ID_HERE",
+  entryName: "entry.1100310467",           // same three entry IDs used across all levels
+  entrySet: "entry.1988772705",
+  entryScore: "entry.1275573724",
+};
+
+/* ================================================================
+   SETS — the C1 vocabulary. Add or edit sets here.
+   ----------------------------------------------------------------
+   Each set:
+     id    : short unique string (no spaces)
+     name  : shown to students
+     type  : "text"  -> definition side is text
+             "image" -> definition side is a picture
+     cards : list of { term, def, img }
+        term : the vocabulary word/phrase
+        def  : the text definition  (used by "text" sets, and as
+               the fallback label for "image" sets with no picture)
+        img  : image filename in the images/ folder (image sets).
+               Leave "" until the picture exists — the tool will
+               show the def text instead so every mode still works.
+   ================================================================ */
+const SVG_ART = {};
+
+const SETS = [
+  { id: "week1", name: "Week 1 \u00b7 Welcome Wagon", type: "text",
+    cards: [
+      {"term": "To drop by / To pop in", "def": "To visit a place or person casually and without a formal appointment for a short time.", "ex": "Feel free to drop by if you ever need to borrow a tool or have a question about the area."},
+      {"term": "Hands-down", "def": "Definitely; without a doubt.", "ex": "The bakery on Elm Street is hands-down the best place for fresh bread around here."},
+      {"term": "A hidden gem", "def": "A beautiful, special, or highly useful place that is not well-known by most people.", "ex": "There's a small park behind the library that's a real hidden gem—it’s usually completely empty."},
+      {"term": "To find your bearings", "def": "To become familiar with a new situation, routine, or physical environment.", "ex": "Take your time to find your bearings this week; it's a lot of new information at once."},
+      {"term": "To get the hang of [something]", "def": "To learn how to do something correctly or become comfortable with a new system/routine.", "ex": "Don't worry about the software yet. It takes a few days to get the hang of it."},
+      {"term": "To keep an eye out for [something/someone]", "def": "To watch carefully for something to appear, or to look after someone's safety/property.", "ex": "I'll keep an eye out for your Amazon deliveries while you're at work."},
+      {"term": "The go-to [place/person/thing]", "def": "The best or most reliable option that everyone chooses for a specific need.", "ex": "If you ever have car trouble, Mike’s Auto is the go-to mechanic in this neighborhood."},
+      {"term": "A spot", "def": "A casual word for a restaurant, park, cafe, or location.", "ex": "There's a great taco spot just two blocks down."},
+      {"term": "To settle in", "def": "To become comfortable and established in a new house, apartment, or job.", "ex": "How are you settling in? Let me know if you need help moving any heavy boxes."},
+      {"term": "To point [someone] in the right direction", "def": "To give someone the basic information or advice they need to find something.", "ex": "If you're looking for a good dentist, I can point you in the right direction."},
+      {"term": "To grab [coffee/lunch]", "def": "To get a quick, casual meal or drink with someone.", "ex": "We should grab a coffee sometime this week so I can introduce you to the rest of the team."},
+      {"term": "Swamped / Slammed", "def": "Incredibly busy with a large amount of work or tasks.", "ex": "No worries at all if you're too swamped with unpacking this weekend."},
+      {"term": "To take a rain check", "def": "To politely decline an invitation for now, but suggest rescheduling it for a future date.", "ex": "I’d love to get lunch, but I have a deadline today. Can I take a rain check for next Tuesday?"},
+      {"term": "Low-key", "def": "Relaxed, quiet, casual, or without a lot of fuss/activity.", "ex": "It's just going to be a low-key get-together in the backyard, nothing fancy."},
+      {"term": "To touch base", "def": "To briefly contact or talk to someone to update them or check on how they are doing.", "ex": "I just wanted to touch base and see if you managed to get your internet set up okay."},
+      {"term": "To play it by ear", "def": "To deal with a situation as it develops rather than making a strict, rigid plan.", "ex": "Let's see how much progress you make on your house chores, and we can play it by ear for dinner."},
+      {"term": "To follow up", "def": "To check back in on a previous conversation or action to see what the next steps are.", "ex": "I'm just following up on our chat from yesterday—are you still free for coffee at 10?"},
+      {"term": "Up for [something]", "def": "Wanting to do a particular activity; feeling enthusiastic or ready for it.", "ex": "Are you up for a quick walk around the block during our break?"},
+      {"term": "To reach out", "def": "To contact someone, usually to offer help or ask for assistance.", "ex": "Please don't hesitate to reach out if you have any questions about how the parking rules work here."},
+      {"term": "Whenever works for you", "def": "At whatever time or day is most convenient for the other person.", "ex": "I'm around all afternoon, so we can chat whenever works for you."},
+    ],
+  },
+  { id: "week2", name: "Week 2 \u00b7 Describing Medical Issues", type: "text",
+    cards: [
+      {"term": "Numbness", "def": "A temporary or permanent loss of physical sensation in a part of the body.", "ex": "I first noticed the numbness in my fingers while I was typing at work, and now I can barely feel my keys."},
+      {"term": "To fluctuate", "def": "To rise and fall irregularly in number, intensity, or level.", "ex": "My blood sugar readings fluctuate wildly throughout the day, depending on what I eat."},
+      {"term": "Abruptly", "def": "Suddenly and unexpectedly.", "ex": "The sharp pain in my lower back started abruptly while I was lifting a heavy box."},
+      {"term": "Gradually", "def": "Slowly over a long period of time.", "ex": "My energy levels decreased gradually over the summer, and now I feel exhausted all the time."},
+      {"term": "Persistent", "def": "Continuing firmly or refusing to go away.", "ex": "Even though I drank three glasses of water, I still had a persistent feeling of intense thirst."},
+      {"term": "Episode", "def": "A distinct, isolated period of a symptom or illness.", "ex": "I had a severe episode of dizziness yesterday afternoon, so I had to sit down immediately."},
+      {"term": "Prior to", "def": "Before a specific point in time.", "ex": "Prior to my appointment today, I had already tracked my physical symptoms for two full weeks."},
+      {"term": "To monitor", "def": "To observe, check, or keep track of something over time.", "ex": "The doctor wants me to monitor my blood pressure at home every morning and night."},
+      {"term": "To flag", "def": "To identify or mark something as unusual, suspicious, or problematic.", "ex": "The lab technician flagged my high A1C results so that the doctor would call me immediately."},
+      {"term": "Consistent", "def": "Staying the same; not changing or variable.", "ex": "If you want to manage your blood sugar, you need to maintain a consistent routine of exercise and healthy meals."},
+      {"term": "Dosage", "def": "The exact amount or frequency of a medicine that should be taken.", "ex": "The doctor increased my dosage of Metformin because my glucose levels were still too high."},
+      {"term": "Side effect", "def": "A secondary, typically unpleasant effect of a drug or medical treatment.", "ex": "Nausea is a very common side effect when you first start taking this new medication."},
+      {"term": "To tolerate", "def": "To be able to accept or endure something unpleasant without a dangerous or bad reaction.", "ex": "My stomach cannot tolerate this pain medication, so I need to switch to a different one."},
+      {"term": "To subside", "def": "To become less intense, severe, or active; to die down.", "ex": "The throbbing pain in my wrist usually subsides after I apply an ice pack for twenty minutes."},
+      {"term": "To trigger", "def": "To cause a sudden physical reaction or symptom flare-up.", "ex": "Eating highly processed carbohydrates will quickly trigger a spike in my blood sugar."},
+      {"term": "Referral", "def": "An official recommendation from a primary care doctor to see a specialist.", "ex": "My primary care doctor gave me a referral to an orthopedic specialist to look at my chronic back pain."},
+      {"term": "To rule out", "def": "To eliminate a medical possibility through testing.", "ex": "We ordered an X-ray to rule out a bone fracture before we begin physical therapy for your back."},
+      {"term": "Flare-up / To flare up", "def": "A sudden outburst or worsening of a chronic symptom that had previously been quiet.", "ex": "My carpal tunnel symptoms flare up every time I spend too many consecutive hours working at my computer."},
+      {"term": "Reading", "def": "The specific measurement or data point shown on a medical device.", "ex": "I checked my glucose monitor after lunch, and my reading was much higher than usual."},
+      {"term": "Prognosis", "def": "The likely course, progression, or final outcome of a medical condition.", "ex": "The doctor's prognosis was very positive; she said my nerve damage would heal completely if I wear a wrist brace."},
+    ],
+  },
+  { id: "week3", name: "Week 3 \u00b7 Landlord & Tenant", type: "text",
+    cards: [
+      {"term": "Wear and tear", "def": "Damage or deterioration that results from ordinary, normal use over time.", "ex": "The tenant pointed out that the faded living room carpet was just normal wear and tear, not damage that should be deducted from their security deposit."},
+      {"term": "Uninhabitable", "def": "Unfit or unsafe for humans to live in due to severe neglect or hazards.", "ex": "After the heating system broke down during a freezing week in January, the tenant sent an urgent email stating the apartment was legally uninhabitable."},
+      {"term": "Warped", "def": "Bent, twisted, or out of shape, usually caused by water damage or heat.", "ex": "In his written request, the tenant noted that the wooden floorboards near the radiator had become warped due to the ongoing pipe leak."},
+      {"term": "Waterlogged", "def": "Completely soaked or saturated with water (e.g., drywall or carpets).", "ex": "The property manager immediately sent a maintenance crew to replace the drywall that became waterlogged after the upstairs tub overflowed."},
+      {"term": "Corroded", "def": "Worn away slowly by chemicals, rust, or water (frequently used for plumbing/pipes).", "ex": "During the inspection, the plumber discovered a corroded pipe under the kitchen sink, which explained the slow drain and rusty water."},
+      {"term": "Dilapidated", "def": "In a state of serious ruin or decay as a result of age or long-term neglect.", "ex": "The tenants association complained to the city about the dilapidated condition of the building's shared stairwell and peeling exterior paint."},
+      {"term": "Structural damage", "def": "Destruction affecting the core stability or safety of a building (walls, floors, roof).", "ex": "The engineer's report confirmed that the heavy ceiling cracks were a sign of structural damage rather than cosmetic wear."},
+      {"term": "Infestation", "def": "The presence of a large number of pests (insects, rodents) that cause damage or disease.", "ex": "The tenant provided photo evidence of a pest infestation in the pantry and requested that a professional exterminator be sent immediately."},
+      {"term": "Paper trail", "def": "A series of written or digital documents that provide evidence of a timeline or actions taken.", "ex": "By sending all repair requests via email instead of text messages, the tenant successfully built a clear paper trail of the issue."},
+      {"term": "Negligence", "def": "Failure to take proper care or fulfill a legal responsibility.", "ex": "The tenant argued that the landlord's refusal to fix the broken front door lock for three months constituted gross negligence."},
+      {"term": "Code violation", "def": "A failure to meet local city laws regarding property safety and building standards.", "ex": "The city inspector issued a code violation notice to the landlord because the apartment lacked a functioning smoke detector."},
+      {"term": "Itemized", "def": "Listed item by item in a detailed breakdown (e.g., a list of required repairs or fees).", "ex": "Before moving out, the tenant requested an itemized list of any repair deductions the landlord planned to take from the deposit."},
+      {"term": "To escalate", "def": "To increase the intensity, seriousness, or legal level of a situation or dispute.", "ex": "If management does not address the mold problem by Friday, I will be forced to escalate this matter to the local housing authority."},
+      {"term": "Lease renewal", "def": "A new contract extending the tenancy period under agreed terms.", "ex": "The landlord sent over the lease renewal paperwork two months early, offering a 12-month extension to the current tenants."},
+      {"term": "Rent stabilization", "def": "Local laws that limit the percentage a landlord can increase the rent each year.", "ex": "Because the apartment falls under local rent stabilization laws, the landlord was only allowed to increase the monthly rent by three percent."},
+      {"term": "Surcharge", "def": "An additional charge, tax, or fee added to the standard cost of rent or utilities.", "ex": "The utility company added a seasonal surcharge to the building's bill, which the landlord passed along to the tenants as agreed in the contract."},
+      {"term": "To withhold", "def": "To refuse to give or pay something (e.g., withholding rent until a repair is made).", "ex": "After consulting with a legal clinic, the tenant decided to withhold rent until the landlord fixed the broken hot water heater."},
+      {"term": "Leverage", "def": "Strategic power or an advantage used to influence a negotiation.", "ex": "Having a certified city inspection report gave the tenant the leverage they needed to negotiate a lower rent until the repairs were finished."},
+      {"term": "Arbitrary", "def": "Based on random choice or personal whim, rather than any reason, law, or system.", "ex": "The tenant challenged the fee, arguing that a $200 charge for a late payment of one hour felt completely arbitrary and unfair."},
+      {"term": "Concession", "def": "A discount or benefit granted by a landlord to induce a tenant to sign a lease.", "ex": "As a special concession to encourage the tenant to sign a two-year lease, the landlord offered the first month of rent for free."},
+    ],
+  },
+  { id: "week4", name: "Week 4 \u00b7 Job Interview", type: "text",
+    cards: [
+      {"term": "Spearhead", "def": "To lead a project, initiative, or movement.", "ex": "In my previous role, I spearheaded the transition to a paperless inventory system, which saved the department ten hours a week."},
+      {"term": "Streamline", "def": "To make a system or process quicker, more efficient, and less complicated.", "ex": "I managed to streamline our client onboarding process, cutting the setup time down from four days to just one."},
+      {"term": "Overhaul", "def": "To completely change a system or method to improve it.", "ex": "Our team was asked to overhaul the outdated customer feedback system to better capture client complaints."},
+      {"term": "Track record", "def": "A history of past performance and achievements that shows what someone is capable of.", "ex": "I have a proven track record of meeting project deadlines ahead of schedule and under budget."},
+      {"term": "Instrumental", "def": "Essential or highly important in making something happen.", "ex": "I was instrumental in redesigning our team's workflow, which immediately boosted our weekly output."},
+      {"term": "Optimize", "def": "To make the absolute best or most effective use of a situation or resource.", "ex": "My primary goal last quarter was to optimize our supply chain to reduce shipping delays."},
+      {"term": "Leverage", "def": "To use a skill, experience, or resource that you already have to achieve a greater result.", "ex": "I want to leverage my ten years of project management experience to help your team scale its operations."},
+      {"term": "Quantifiable", "def": "Able to be measured or counted as a concrete statistic.", "ex": "I always ensure my achievements are quantifiable, such as the 15% increase in sales I generated last year."},
+      {"term": "Friction", "def": "Disagreement or conflict within a team or process.", "ex": "When introducing new software, I focused on clear communication to reduce any friction among the staff."},
+      {"term": "Mitigate", "def": "To reduce the harmful effects of a problem or risk.", "ex": "We implemented a double-check system to mitigate the risk of data entry errors."},
+      {"term": "Foster", "def": "To encourage the development, growth, or progress of something.", "ex": "As a leader, my priority is to foster a collaborative environment where everyone feels comfortable sharing ideas."},
+      {"term": "Trajectory", "def": "The path or direction something is moving in; a career path.", "ex": "I am looking for a role at a company like yours where my career trajectory aligns with long-term growth."},
+      {"term": "Forward-thinking", "def": "Planning for the future; progressive and innovative.", "ex": "I want to bring my forward-thinking approach to your marketing department to help you reach younger demographics."},
+      {"term": "Synergy", "def": "The extra effectiveness created when two people or groups work successfully together.", "ex": "I believe there is a strong synergy between my background in tech support and your current client-facing goals."},
+      {"term": "Stagnate", "def": "To be more advanced, innovative, or prepared than competitors or peers.", "ex": "I constantly read industry reports to ensure our team's strategies stay ahead of the curve."},
+      {"term": "Move the needle", "def": "To make a significant, noticeable difference or impact on a business goal.", "ex": "We tried several marketing campaigns, but it was the social media redesign that really moved the needle for our sales."},
+    ],
+  },
+  { id: "week5", name: "Week 5 \u00b7 Immigration", type: "text",
+    cards: [
+      {"term": "Clerical error", "def": "A minor mistake made by an office worker or automated system when copying, typing, or recording data.", "ex": "The agency made a clerical error on my approval notice, misspelling my middle name as \"Johnathan\" instead of \"Jonathan."},
+      {"term": "To rectify", "def": "To correct something or put a mistake right.", "ex": "It took three phone calls and a formal request to finally rectify the birthdate error on my official document."},
+      {"term": "Backlog", "def": "A large accumulation of uncompleted work, applications, or tasks that a system needs to deal with.", "ex": "Due to the massive pandemic-related backlog, processing times for standard renewals have stretched from six months to two years."},
+      {"term": "Processing time", "def": "The official period it takes for a government agency to review, handle, and finalize an application from the date it is received.", "ex": "Before you submit your paperwork, check the portal to see the current estimated processing time for your specific region."},
+      {"term": "To expedite", "def": "To make an action or process happen more quickly or speed it up.", "ex": "The applicant requested to expedite her case because she had a time-sensitive job offer waiting for her."},
+      {"term": "Receipt notice", "def": "An official document sent by an agency confirming that they have formally received an application and the associated fees.", "ex": "Keep your receipt notice in a safe place, as the tracking number at the top is required to check your status online."},
+      {"term": "Status verification", "def": "The formal process of proving or checking a person’s legal standing or the current state of an ongoing application.", "ex": "The employer required official status verification before the new employee could legally begin working."},
+      {"term": "To mandate", "def": "To give an official order, command, or requirement that makes an action compulsory or mandatory.", "ex": "Government regulations mandate that all immigrants report any change of physical address within ten days of moving."},
+      {"term": "Jurisdiction", "def": "The official power, right, or authority to make legal decisions, judgments, or handle specific geographic cases.", "ex": "Because I moved to a different state, my file was transferred to the field office that holds jurisdiction over my new city."},
+      {"term": "Discretion", "def": "The freedom or authority of an official or officer to make a judgment call or decision based on a situation instead of a rigid rule.", "ex": "The officer at the information desk has the discretion to grant an emergency appointment if you can prove severe financial hardship."},
+      {"term": "Automated gatekeeper", "def": "The Interactive Voice Response (IVR) robot or computerized menu that answers phone lines and filters calls before allowing access to a human.", "ex": "I spent twenty minutes trying to get past the automated gatekeeper by repeating the keyword \"representative\" over and over."},
+      {"term": "To escalate", "def": "To refer a matter, problem, or dispute to a higher authority, supervisor, or manager for resolution.", "ex": "When the customer service agent couldn't find my missing file, I politely asked them to escalate the issue to a supervisor."},
+      {"term": "To clarify", "def": "To make a statement, rule, or instruction less confusing and more clearly understandable.", "ex": "Could you please clarify if I need to bring original birth certificates or if certified photocopies are acceptable?"},
+      {"term": "Jargon", "def": "Special words, acronyms, or technical expressions used by a particular profession or group that are difficult for others to understand.", "ex": "The government website is filled with legal jargon like \"beneficiary\" and \"petitioner,\" which can confuse even native speakers."},
+      {"term": "Contradictory", "def": "Mutually opposed, inconsistent, or stating the opposite of what has already been said.", "ex": "The information on the website is completely contradictory to what the telephone agent told me this morning."},
+      {"term": "Ambiguous", "def": "Open to more than one interpretation; not having one clear or obvious meaning.", "ex": "The instructions on the government form were so ambiguous that I had to search online forums to understand what they meant."},
+      {"term": "Legal counsel", "def": "A professional legal adviser, such as a lawyer or attorney, who provides guidance on legal matters.", "ex": "If an official asks a complex question about your history, you have the right to state that you want to consult with your legal counsel."},
+      {"term": "Disclaimer", "def": "A formal statement that limits or denies legal liability, responsibility, or the provision of official professional advice.", "ex": "The teacher included a disclaimer at the start of the lesson, stating that the class was for language practice and was not legal advice."},
+      {"term": "Factual narrative", "def": "A clear, objective chronological statement of the exact facts and events that occurred, devoid of emotion or speculation.", "ex": "When speaking to a government representative, sticking to a strict factual narrative prevents emotional arguments and resolves issues faster."},
+      {"term": "To compromise", "def": "To put something valuable, like one's legal status, reputation, or safety, at risk or in a vulnerable position.", "ex": "Missing a mandatory fingerprinting appointment could heavily compromise the progress of your entire application."},
+    ],
+  },
+  { id: "week6", name: "Week 6 \u00b7 Cars: Care & Coverage", type: "text",
+    cards: [
+      {"term": "Routine maintenance", "def": "Regular, planned upkeep or servicing of a vehicle (like oil changes, tire rotations, and fluid checks) to keep it running smoothly and prevent major breakdowns.", "ex": "If you don't keep up with routine maintenance like regular oil changes, you risk damaging your engine in the long run."},
+      {"term": "Wear and tear", "def": "The natural, gradual damage, deterioration, or degradation that happens to a car's parts over time from normal, everyday use.", "ex": "The mechanic told me the brake pads were getting thin, but it’s just normal wear and tear from my daily highway commute."},
+      {"term": "To make a squeaking/grinding noise", "def": "To emit high-pitched, friction-based, or harsh metallic sounds that usually signal a problem with a car's brakes, belts, or bearings.", "ex": "My front wheels have been making a loud grinding noise every single time I step on the brake pedal."},
+      {"term": "To stall", "def": "When an engine suddenly and unintentionally stops running, often due to a mechanical issue, lack of fuel, or a transmission problem while driving or idling.", "ex": "The car started shaking violently at the red light, and then the engine completely stalled right in the middle of the busy intersection."},
+      {"term": "An estimate / quote", "def": "A written or verbal breakdown from a business detailing the expected or projected cost of parts and labor before any repair work actually begins.", "ex": "Could you print out a written estimate for the total repair costs before you start working on the transmission?"},
+      {"term": "Labor costs", "def": "The part of a repair bill that covers the cost of the mechanic's time, expertise, and manual work, calculated separately from the physical price of the replacement parts.", "ex": "The parts for the alternator are actually quite cheap, but the labor costs are high because it takes four hours to install."},
+      {"term": "An upsell", "def": "A sales technique where a service advisor or mechanic tries to convince a customer to purchase extra, premium, or non-essential services beyond what they originally asked for.", "ex": "The dealership tried to upsell me on a premium fuel injection flush, but I knew my car didn’t actually need it."},
+      {"term": "To hold off on (something)", "def": "To intentionally delay, postpone, or wait to perform a specific action or service until a future date or a later time.", "ex": "I’ll get the oil changed today, but I’d like to hold off on getting the new tires until next month."},
+      {"term": "To backfire", "def": "When an internal combustion engine experiences a mistimed explosion, causing a loud, sudden popping or banging noise to come out of the exhaust pipe.", "ex": "When I tried to accelerate up the steep hill, the exhaust backfired with a loud pop and smoke came out."},
+      {"term": "Under warranty", "def": "A legal guarantee from a manufacturer or dealership stating that they will cover the financial cost of certain repairs or defects for a specific period of time or mileage.", "ex": "Luckily, when my transmission failed unexpectedly, the entire repair was free because the vehicle was still under warranty."},
+      {"term": "Premium", "def": "The recurring financial amount (usually paid monthly, semi-annually, or annually) required to keep an insurance policy active and in effect.", "ex": "Because I had a completely clean driving record for three consecutive years, the insurance company finally lowered my monthly premium."},
+      {"term": "Deductible", "def": "The fixed amount of money that an insured driver must pay out of their own pocket toward a claim before the insurance company begins paying for the remaining damages.", "ex": "I have a $500 deductible, so if the total repair bill is $1,200, I have to pay $500 and the insurance company pays the remaining $700."},
+      {"term": "Liability coverage", "def": "A standard type of car insurance that pays for property damage, repairs, and medical injuries that you cause to other drivers, passengers, or pedestrians in an accident where you are responsible.", "ex": "In most states, you are legally required to carry liability coverage to pay for the other driver's repairs if you cause a wreck."},
+      {"term": "Comprehensive coverage", "def": "A specific type of auto insurance that covers physical damage to your own vehicle resulting from incidents other than a direct collision, such as theft, fire, vandalism, hail, or hitting an animal.", "ex": "I’m glad I added comprehensive coverage to my policy, because it paid for my windshield when a tree branch fell on it during the storm."},
+      {"term": "To file a claim", "def": "The official, formal request submitted by a policyholder to their insurance company asking for payment or compensation for a loss, accident, or covered event.", "ex": "Right after the police took my official report at the scene of the accident, I called my agent to file a claim."},
+      {"term": "At fault", "def": "Being legally responsible, blamed, or held accountable for causing a vehicular accident or traffic collision.", "ex": "The police report clearly states that the other driver ran the stop sign, so she is determined to be completely at fault."},
+      {"term": "Fender-bender", "def": "An informal term for a minor car accident that causes very little cosmetic damage to the vehicle bodies and results in no physical injuries to the occupants.", "ex": "It was just a minor fender-bender in the grocery store parking lot—just a few scratches on the bumper and no one was hurt."},
+      {"term": "Claims adjuster", "def": "A designated official or representative from an insurance company who investigates an accident, assesses the physical damage, and decides how much money the company will pay out.", "ex": "The claims adjuster is coming to the body shop tomorrow morning to inspect the structural damage and approve the repair bill."},
+      {"term": "To hit-and-run", "def": "An illegal act where a driver causes or is involved in a collision with another vehicle, property, or person, and deliberately drives away from the scene without stopping or sharing insurance information.", "ex": "My parked car was involved in a hit-and-run last night; the driver left a massive dent on the door but no note or contact information."},
+      {"term": "Out-of-pocket expense", "def": "Any personal, upfront financial cost that a policyholder must pay with their own money because it is not covered, reimbursed, or paid for by their insurance policy.", "ex": "Since I didn’t have rental car coverage on my active policy, paying for an Uber to work every single day was an out-of-pocket expense."},
+    ],
+  },
+  { id: "week7", name: "Week 7 \u00b7 Eyewitness", type: "text",
+    cards: [
+      {"term": "Flee", "def": "To run away from a place or danger quickly.", "ex": "After the alarm started ringing, I saw the suspect flee out the back door."},
+      {"term": "Swerve", "def": "To change direction abruptly to avoid hitting something.", "ex": "The black SUV had to swerve onto the sidewalk to miss the delivery truck."},
+      {"term": "Sprint", "def": "To run at top speed for a short distance.", "ex": "The teenager managed to sprint past the security guard and disappear into the crowd."},
+      {"term": "Lurk", "def": "To wait or hide secretly, usually with a suspicious intent.", "ex": "Before the store opened, I noticed a man lurking near the delivery entrance."},
+      {"term": "Collide", "def": "To crash into something or someone with force.", "ex": "Neither driver saw the red light, causing the two vehicles to collide in the middle of the street."},
+      {"term": "Intersection", "def": "The point where two or more streets cross each other.", "ex": "The accident occurred right at the intersection of 5th Avenue and Main Street."},
+      {"term": "Alleyway", "def": "A narrow lane or path between or behind buildings.", "ex": "I saw the two individuals run down the dark alleyway behind the grocery store."},
+      {"term": "Curb", "def": "The stone or concrete edge of a sidewalk next to the street.", "ex": "The car pulled up sharply against the curb, and a passenger jumped out."},
+      {"term": "Crosswalk", "def": "A marked path where pedestrians can safely cross a street.", "ex": "The pedestrian was already halfway through the crosswalk when the motorcycle sped by."},
+      {"term": "Storefront", "def": "The front side of a shop that faces the street.", "ex": "The shattered glass from the broken storefront was scattered all over the sidewalk."},
+      {"term": "Distinguishing feature", "def": "A unique physical characteristic that makes someone easy to identify, like a tattoo or scar.", "ex": "The most obvious distinguishing feature I noticed was a large tattoo of an eagle on his neck."},
+      {"term": "Apparel", "def": "Clothing, especially formal or specific types of clothes.", "ex": "The perpetrator was wearing dark athletic apparel and a baseball cap."},
+      {"term": "Stature", "def": "A person's natural height or physical build.", "ex": "The officer asked if the suspect was of short, medium, or tall stature."},
+      {"term": "License plate", "def": "The metal sign on a vehicle showing its official registration number.", "ex": "I tried to read the license plate, but the car drove away too quickly in the dark."},
+      {"term": "Debris", "def": "Scattered pieces of waste, remains, or broken glass after an accident.", "ex": "After the crash, police officers had to clear the debris from the road before traffic could move."},
+      {"term": "Bystander", "def": "A person who is present at an event or incident but does not take part in it.", "ex": "An innocent bystander recorded the entire argument on their smartphone."},
+      {"term": "Perpetrator", "def": "The person who carries out a harmful or illegal act.", "ex": "The victim told the police that she did not recognize the perpetrator."},
+      {"term": "Comply", "def": "To act in accordance with a command, rule, or request.", "ex": "The bank teller was terrified, so she decided to comply with the robber's demands immediately."},
+      {"term": "Statement", "def": "A formal written or spoken account of facts given to the police.", "ex": "I stayed at the scene for an hour so I could give my official statement to the responding officer."},
+      {"term": "Footage", "def": "Video recorded by a camera.", "ex": "The detective is checking if any nearby businesses have security footage of the incident."},
+    ],
+  },
+];
+
+const SET_COLORS = ["#2f5d4e", "#bf5a36", "#caa24a", "#516b8b", "#8a5a7a", "#5a7d52", "#9c5f52"];
+
+/* ---- 8-WEEK STUDY PLAN (C1) ----------------------------------------------
+   Each word counts as "learned" once answered correctly LEARN_TARGET times
+   across the study modes. Lower it to 2 to match the other levels, or raise
+   it for a stricter bar. The weekly plan pairs new sets with review of the
+   sets learned earlier — spaced practice is what moves words into memory. */
+const LEARN_TARGET = 5;
+const TOTAL_WORDS = SETS.reduce((n,s)=>n+s.cards.length,0);
+const C1_WEEKS = [
+  { wk:1, learn:["week1"], review:[] },
+  { wk:2, learn:["week2"], review:["week1"] },
+  { wk:3, learn:["week3"], review:["week1", "week2"] },
+  { wk:4, learn:["week4"], review:["week1", "week2", "week3"] },
+  { wk:5, learn:["week5"], review:["week1", "week2", "week3", "week4"] },
+  { wk:6, learn:["week6"], review:["week1", "week2", "week3", "week4", "week5"] },
+  { wk:7, learn:["week7"], review:["week1", "week2", "week3", "week4", "week5", "week6"] },
+];
+const $ = (id) => document.getElementById(id);
+const app = $("app");
+
+function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ---- audio: speak a word using the browser's built-in voice (no files, works offline) ---- */
+function canSpeak(){ return typeof window!=="undefined" && "speechSynthesis" in window; }
+function speak(text){
+  try{
+    if(!canSpeak()) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(String(text));
+    u.lang="en-US"; u.rate=.95;
+    speechSynthesis.speak(u);
+  }catch(e){ /* audio is best-effort; never blocks the student */ }
+}
+
+/* ---- speaking practice: recognise the student's voice (Chrome/Safari, needs mic + internet) ---- */
+function canRecognize(){ return typeof window!=="undefined" && !!(window.SpeechRecognition||window.webkitSpeechRecognition); }
+function listenOnce(onResult,onError){
+  try{
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    const r=new SR(); r.lang="en-US"; r.interimResults=false; r.maxAlternatives=4;
+    let got=false;
+    r.onresult=(e)=>{ got=true; const alts=[]; const R=e.results[0]; for(let i=0;i<R.length;i++) alts.push(R[i].transcript); onResult(alts); };
+    r.onerror=(e)=>{ onError&&onError(e.error||"error"); };
+    r.onend=()=>{ if(!got) onError&&onError("no-speech"); };
+    r.start();
+    return r;
+  }catch(e){ onError&&onError("unsupported"); return null; }
+}
+function normalizeSpeech(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g," ").trim(); }
+function speechMatches(term,alts){
+  const t=normalizeSpeech(term); const tT=t.split(" ").filter(Boolean);
+  return alts.some(a=>{
+    const n=normalizeSpeech(a); if(!n) return false;
+    if(n===t) return true;
+    const nT=n.split(" ");
+    if(tT.length===1) return nT.includes(t);               // single word: must be said
+    const hit=tT.filter(x=>nT.includes(x)).length;         // phrase: most words present
+    return hit>=Math.ceil(tT.length*0.6);
+  });
+}
+
+/* ---- progress: stored per set in the browser ---- */
+function progKey(setId){return "sqa_vocab_convtrack3_"+setId;}
+function loadProg(setId){
+  try { return JSON.parse(localStorage.getItem(progKey(setId))) || {}; }
+  catch(e){ return {}; }
+}
+function saveProg(setId,p){
+  try { localStorage.setItem(progKey(setId), JSON.stringify(p)); }
+  catch(e){ /* storage unavailable — tool still works for the session */ }
+}
+function bumpProg(setId,term,correct){
+  const p=loadProg(setId);
+  const c=p[term]||{seen:0,correct:0};
+  p[term]={seen:c.seen+1,correct:c.correct+(correct?1:0)};
+  saveProg(setId,p);
+}
+function learnedCount(set){
+  const p=loadProg(set.id);
+  return set.cards.filter(c=>p[c.term]&&p[c.term].correct>=LEARN_TARGET).length;
+}
+
+/* ---- Google Form reporting ---- */
+function reportScore(setName,scoreText){
+  if(!FORM_CONFIG.enabled) return;
+  try{
+    const name=(window.__studentName||"").trim();
+    const u="https://docs.google.com/forms/d/e/"+FORM_CONFIG.formId+"/formResponse";
+    const f=new FormData();
+    f.append(FORM_CONFIG.entryName,name);
+    f.append(FORM_CONFIG.entrySet,setName);
+    f.append(FORM_CONFIG.entryScore,scoreText);
+    fetch(u,{method:"POST",body:f,mode:"no-cors"});
+  }catch(e){ /* reporting is best-effort; never blocks the student */ }
+}
+
+/* ---- router ---- */
+let STATE={name:"home"};
+function go(s){STATE=s;render();}
+
+function render(){
+  const v=STATE.name;
+  if(v==="home")        renderHome();
+  else if(v==="modes")  renderModes();
+  else if(v==="flash")  renderFlash();
+  else if(v==="quiz")   renderQuiz();
+  else if(v==="match")  renderMatch();
+  else if(v==="listen") renderListen();
+  else if(v==="list")   renderList();
+  else if(v==="recall") renderRecall();
+  else if(v==="cloze")  renderCloze();
+  else if(v==="plan")   renderPlan();
+}
+
+/* ---- HOME: pick a set ---- */
+function renderHome(){
+  $("head-pill").textContent="Level C1+";
+  let html=`<h1 class="page rise">Vocabulary practice</h1>
+    <p class="lead rise">Choose a set to study. Seven ways to practise each one — flashcards, quiz, listening, matching, word list, recall, and fill the blank. Your progress is saved on this device.</p>
+    <button class="set-card rise" style="background:var(--moss);border-color:var(--moss)" onclick='go({name:"plan"})'>
+      <span class="set-badge" style="background:rgba(255,255,255,.18)">📅</span>
+      <span>
+        <span class="set-name" style="color:#fff">7-Week Study Plan</span>
+        <span class="set-meta" style="color:rgba(255,255,255,.82)">Your goal: all ${TOTAL_WORDS} words in 7 weeks · tap to see this week</span>
+      </span>
+      <span class="set-arrow" style="color:#fff">→</span>
+    </button>
+    <div class="rise">`;
+  SETS.forEach((set,i)=>{
+    const color=SET_COLORS[i%SET_COLORS.length];
+    const learned=learnedCount(set);
+    const kind=set.kind==="verb"?"past tense":set.type==="image"?"picture set":set.type==="color"?"color set":"definitions";
+    html+=`<button class="set-card" onclick='go({name:"modes",setId:"${set.id}"})'>
+      <span class="set-badge" style="background:${color}">${i+1}</span>
+      <span>
+        <span class="set-name">${esc(set.name)}</span>
+        <span class="set-meta">${set.cards.length} words · ${kind} · ${learned}/${set.cards.length} learned</span>
+      </span>
+      <span class="set-arrow" style="color:${color}">→</span>
+    </button>`;
+  });
+  html+=`</div>`;
+  app.innerHTML=html;
+}
+
+/* ---- MODES: pick how to study ---- */
+function renderModes(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  $("head-pill").textContent=set.name.split("·").pop().trim();
+  const modes=[
+    {key:"flash",name:"Flashcards",desc:set.kind==="verb"?"Flip each card to see the past tense.":"Flip each card to see the meaning.",color:"var(--moss)",fg:"#fff"},
+    {key:"quiz",name:"Quiz",desc:"Pick the right answer. Four choices.",color:"var(--clay)",fg:"#fff"},
+    {key:"match",name:"Matching",desc:set.kind==="verb"?"Pair every verb in the set with its past tense.":"Pair every word in the set with its meaning.",color:"var(--gold)",fg:"var(--ink)"},
+    {key:"listen",name:"Listening",desc:"Hear the word, then pick it.",color:"var(--slate)",fg:"#fff"},
+    {key:"list",name:"Word list",desc:"See every word and meaning on one page.",color:"var(--ink)",fg:"#fff"},
+    {key:"recall",name:"Recall",desc:"Read the meaning and type the word from memory.",color:"#8a5a44",fg:"#fff"},
+    {key:"cloze",name:"Fill the blank",desc:"Read a sentence and type the missing word.",color:"#3f7068",fg:"#fff"},
+  ];
+  let html=`<div class="topbar rise">
+      <span class="label">${esc(set.name)} · ${set.cards.length} words</span>
+      <button class="exit" onclick='go({name:"home"})'>← All sets</button>
+    </div>
+    <h1 class="page rise">How do you want to study?</h1>
+    <div class="mode-grid rise">`;
+  modes.forEach(m=>{
+    html+=`<button class="mode-card" onclick='go({name:"${m.key}",setId:"${set.id}"})'>
+      <span class="mode-letter" style="background:${m.color};color:${m.fg}">${m.name[0]}</span>
+      <span>
+        <span class="mode-name">${m.name}</span>
+        <span class="mode-desc">${m.desc}</span>
+      </span>
+      <span class="set-arrow" style="margin-left:auto;color:${m.color}">→</span>
+    </button>`;
+  });
+  html+=`</div>`;
+  if(learnedCount(set)>0){
+    html+=`<button class="reset" onclick='resetSet("${set.id}")'>Reset my progress for this set</button>`;
+  }
+  app.innerHTML=html;
+}
+function resetSet(id){ saveProg(id,{}); go({name:"modes",setId:id}); }
+
+/* ---- the meaning side renderer ----
+   Handles four cases, in priority order:
+     1. card.img === "svg"  -> inline illustration from SVG_ART
+     2. card.swatch         -> a solid color square (Colors set)
+     3. card.img (filename) -> external image from images/ folder
+     4. otherwise           -> the definition text
+   size: "lg" (flashcard back), "md" (quiz option), "sm" (match tile)
+*/
+function meaningHTML(card,size){
+  const dim = size==="lg" ? 150 : size==="md" ? 78 : 56;
+  // 1. embedded SVG illustration — by explicit 'art' key, then term, then def
+  if(card.img==="svg"){
+    const art = SVG_ART[card.art] || SVG_ART[card.term] || SVG_ART[card.def];
+    if(art){
+      return `<span class="art" style="width:${dim}px;height:${dim}px;display:inline-block">${art}</span>`;
+    }
+  }
+  // 2. color swatch (drawn, no file needed)
+  if(card.swatch){
+    const stroke = card.swatch.toLowerCase()==="#fbfaf6" ? "var(--line)" : "transparent";
+    return `<span class="swatch" style="width:${dim}px;height:${dim}px;background:${esc(card.swatch)};border:2px solid ${stroke}"></span>`;
+  }
+  // 3. external image file
+  if(card.img){
+    return `<img class="card-img" src="images/${esc(card.img)}" alt="${esc(card.def)}" />`;
+  }
+  // 4. plain text definition — render short numbers extra-large
+  const isShortNumber = /^\d{1,4}$/.test(String(card.def).trim());
+  if(size==="lg" && isShortNumber){
+    return `<span class="def-num">${esc(card.def)}</span>`;
+  }
+  return `<span class="${size==='lg'?'def-lg':''}">${esc(card.def)}</span>`;
+}
+/* does this set show a visual (illustration or swatch) on the meaning side? */
+function setIsVisual(set){
+  return set.type==="image" || set.type==="color";
+}
+
+/* renders the MEANING side as a quiz QUESTION (cream background, dark ink).
+   Used by the quiz, which asks meaning → word for faster classroom pacing. */
+function questionHTML(card){
+  // 1. embedded SVG illustration
+  if(card.img==="svg"){
+    const art = SVG_ART[card.art] || SVG_ART[card.term] || SVG_ART[card.def];
+    if(art) return `<span class="art" style="width:150px;height:150px;display:inline-block;margin-top:8px">${art}</span>`;
+  }
+  // 2. color swatch
+  if(card.swatch){
+    const stroke = card.swatch.toLowerCase()==="#fbfaf6" ? "var(--line)" : "transparent";
+    return `<span class="swatch" style="width:150px;height:150px;background:${esc(card.swatch)};border:2px solid ${stroke};margin-top:8px"></span>`;
+  }
+  // 3. external image file
+  if(card.img){
+    return `<img class="card-img" src="images/${esc(card.img)}" alt="${esc(card.def)}" />`;
+  }
+  // 4. short numeric definition rendered extra-large (Numbers set)
+  const isShortNumber = /^\d{1,4}$/.test(String(card.def).trim());
+  if(isShortNumber){
+    return `<div style="font-family:var(--font-display);font-size:84px;font-weight:700;line-height:1;color:var(--ink);text-align:center;margin-top:8px">${esc(card.def)}</div>`;
+  }
+  // 5. plain text definition
+  return `<div style="font-family:var(--font-display);font-size:22px;font-weight:500;line-height:1.4;color:var(--ink);text-align:center;margin:10px 4px 0">${esc(card.def)}</div>`;
+}
+
+/* ---- FILL THE BLANK (cloze): sentence with the word removed -> type it ---- */
+function clozeText(ex,term){
+  const e=clozeTarget(term).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return ex.replace(new RegExp(e,'i'),'\u2003______\u2003');
+}
+function renderCloze(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const order=shuffle(set.cards.filter(c=>c.ex));
+  if(order.length===0){
+    app.innerHTML=`<div class="topbar"><span class="label">${esc(set.name)}</span><button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>\u2715 Exit</button></div><div class="qcard rise" style="text-align:center"><p class="lead">This set has no example sentences yet.</p></div>`;
+    return;
+  }
+  let i=0,score=0,answered=false;
+  function draw(){
+    const card=order[i];
+    app.innerHTML=`
+      <div class="topbar">
+        <span class="label">Sentence ${i+1} of ${order.length}</span>
+        <button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>\u2715 Exit</button>
+      </div>
+      <div class="bar"><i style="width:${(i/order.length)*100}%;background:#3f7068"></i></div>
+      <div class="qcard rise" style="text-align:center">
+        <span class="kicker" style="color:var(--dim)">Type the missing word</span>
+        <div style="font-family:var(--font-display);font-size:21px;font-weight:500;line-height:1.55;color:var(--ink);margin:12px 4px 0">${esc(clozeText(card.ex,card.term)).replace(/______/g,'<span style="color:#3f7068;font-weight:700">______</span>')}</div>
+        <input id="cloze-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+          placeholder="Type the word\u2026"
+          style="margin-top:18px;width:100%;max-width:340px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;font-family:var(--font-body);font-size:17px;text-align:center;background:var(--paper);color:var(--ink)" />
+        <div id="cloze-fb" style="min-height:22px;margin-top:12px;font-size:14px;font-weight:600"></div>
+      </div>
+      <div id="next-slot" style="text-align:center"><button class="btn-dark rise" id="check-btn">Check</button></div>`;
+    const inp=$("cloze-input"); if(inp) inp.focus();
+    inp.onkeydown=(e)=>{ if(e.key==="Enter"){ e.preventDefault(); if(!answered){ check(); } else { const n=$("next-btn"); if(n) n.click(); } } };
+    $("check-btn").onclick=check;
+    function check(){
+      if(answered) return;
+      const typed=(inp.value||"").trim();
+      if(!typed){ inp.focus(); return; }
+      answered=true; inp.disabled=true;
+      const forms=termForms(card.term).map(normalizeSpeech);
+      const ta=normalizeSpeech(typed);
+      const exact=forms.includes(ta);
+      const correct=exact||forms.some(b=>b.length>=4&&lev(ta,b)<=1);
+      const close=correct&&!exact;
+      if(correct) score++;
+      bumpProg(set.id,card.term,correct);
+      const fb=$("cloze-fb");
+      if(exact){ fb.style.color="var(--moss)"; fb.innerHTML=`\u2713 Correct \u2014 <b>${esc(clozeTarget(card.term))}</b>`; }
+      else if(close){ fb.style.color="#9a7b18"; fb.innerHTML=`\u2713 Almost \u2014 spelling: <b>${esc(clozeTarget(card.term))}</b>`; }
+      else { fb.style.color="var(--clay)"; fb.innerHTML=`\u2715 The word is <b>${esc(clozeTarget(card.term))}</b>`; }
+      const last=i+1>=order.length;
+      $("next-slot").innerHTML=`<button class="btn-dark rise" id="next-btn">${last?"See results":"Next sentence"}</button>`;
+      $("next-btn").onclick=()=>{
+        if(last){
+          showResult({title:"Fill the blank complete",lines:[`You got ${score} out of ${order.length}`],
+            setId:set.id, report:{setName:set.name,scoreText:score+"/"+order.length}});
+        } else { answered=false; i++; draw(); }
+      };
+      $("next-btn").focus();
+    }
+  }
+  draw();
+}
+
+/* ---- term forms: accept "to X"/"X", either side of a slash, drop (notes) ---- */
+function baseTerm(term){ return String(term).replace(/\s*\([^)]*\)\s*/g," ").trim(); }
+function termForms(term){
+  const full=String(term).trim(), base=baseTerm(term);
+  const parts=base.split("/").map(s=>s.trim()).filter(Boolean);
+  const forms=new Set([full, base, ...parts]);
+  [base, ...parts].forEach(p=>{ if(/^to\s+/i.test(p)) forms.add(p.replace(/^to\s+/i,"").trim()); });
+  return [...forms].filter(Boolean);
+}
+function clozeTarget(term){
+  const base=baseTerm(term);
+  let t=base.split("/")[0].trim().replace(/^to\s+/i,"").trim();
+  return t||base;
+}
+
+/* ---- RECALL: read the meaning, type the word (productive recall for advanced learners) ---- */
+function lev(a,b){
+  a=a||"";b=b||"";const m=a.length,n=b.length;
+  const d=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)d[i][0]=i;
+  for(let j=0;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  }
+  return d[m][n];
+}
+function renderRecall(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const order=shuffle(set.cards);
+  let i=0,score=0,answered=false;
+  function draw(){
+    const card=order[i];
+    app.innerHTML=`
+      <div class="topbar">
+        <span class="label">Word ${i+1} of ${order.length}</span>
+        <button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>\u2715 Exit</button>
+      </div>
+      <div class="bar"><i style="width:${(i/order.length)*100}%;background:#8a5a44"></i></div>
+      <div class="qcard rise" style="text-align:center">
+        <span class="kicker" style="color:var(--dim)">Type the word that fits this meaning</span>
+        ${questionHTML(card)}
+        <input id="recall-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+          placeholder="Type the word\u2026"
+          style="margin-top:18px;width:100%;max-width:340px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;font-family:var(--font-body);font-size:17px;text-align:center;background:var(--paper);color:var(--ink)" />
+        <div id="recall-fb" style="min-height:22px;margin-top:12px;font-size:14px;font-weight:600"></div>
+      </div>
+      <div id="next-slot" style="text-align:center"><button class="btn-dark rise" id="check-btn">Check</button></div>`;
+    const inp=$("recall-input"); if(inp) inp.focus();
+    inp.onkeydown=(e)=>{ if(e.key==="Enter"){ e.preventDefault(); if(!answered){ check(); } else { const n=$("next-btn"); if(n) n.click(); } } };
+    $("check-btn").onclick=check;
+    function check(){
+      if(answered) return;
+      const typed=(inp.value||"").trim();
+      if(!typed){ inp.focus(); return; }
+      answered=true; inp.disabled=true;
+      const forms=termForms(card.term).map(normalizeSpeech);
+      const ta=normalizeSpeech(typed);
+      const exact=forms.includes(ta);
+      const correct=exact||forms.some(b=>b.length>=4&&lev(ta,b)<=1);
+      const close=correct&&!exact;
+      if(correct) score++;
+      bumpProg(set.id,card.term,correct);
+      const fb=$("recall-fb");
+      if(exact){ fb.style.color="var(--moss)"; fb.textContent="\u2713 Correct!"; }
+      else if(close){ fb.style.color="#9a7b18"; fb.innerHTML=`\u2713 Almost \u2014 spelling: <b>${esc(card.term)}</b>`; }
+      else { fb.style.color="var(--clay)"; fb.innerHTML=`\u2715 The word is <b>${esc(card.term)}</b>`; }
+      const last=i+1>=order.length;
+      $("next-slot").innerHTML=`<button class="btn-dark rise" id="next-btn">${last?"See results":"Next word"}</button>`;
+      $("next-btn").onclick=()=>{
+        if(last){
+          showResult({title:"Recall complete",lines:[`You recalled ${score} out of ${order.length}`],
+            setId:set.id, report:{setName:set.name,scoreText:score+"/"+order.length}});
+        } else { answered=false; i++; draw(); }
+      };
+      $("next-btn").focus();
+    }
+  }
+  draw();
+}
+
+/* ---- WORD LIST: every word + meaning on one page ---- */
+function renderList(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const verb=set.kind==="verb";
+  const visual=setIsVisual(set);
+  let rows="";
+  set.cards.forEach((c,idx)=>{
+    const hasArt = visual && c.img==="svg";
+    const thumb = hasArt
+      ? `<span style="flex:0 0 56px;display:inline-flex;align-items:center;justify-content:center">${meaningHTML(c,"sm")}</span>`
+      : `<span style="flex:0 0 0"></span>`;
+    rows += `<div style="display:flex;gap:14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line)">
+        ${thumb}
+        <span style="flex:0 0 34%;min-width:92px;font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.2">${esc(c.term)}</span>
+        <span style="flex:1;color:var(--ink);font-size:14px;line-height:1.45">${esc(c.def)}</span>
+        ${canSpeak()?`<button class="speak" id="lw-${idx}" style="flex:0 0 auto;padding:6px 11px;font-size:13px" aria-label="Hear ${esc(c.term)}">\u{1F50A}</button>`:""}
+      </div>`;
+  });
+  app.innerHTML=`
+    <div class="topbar">
+      <span class="label">${esc(set.name)} \u00b7 ${set.cards.length} words</span>
+      <button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>\u2715 Exit</button>
+    </div>
+    <h1 class="page rise" style="font-size:24px;margin:18px 0 6px">All words</h1>
+    <p class="lead" style="margin-bottom:14px;font-size:13.5px">${verb?"Each verb with its past tense.":"Every word in this set with its meaning."}${canSpeak()?" Tap \u{1F50A} to hear a word.":""}</p>
+    <div class="rise" style="background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:6px 16px">${rows}</div>`;
+  if(canSpeak()){
+    set.cards.forEach((c,idx)=>{ const b=$("lw-"+idx); if(b) b.onclick=()=>speak(c.term); });
+  }
+}
+
+/* ---- FLASHCARDS ---- */
+function renderFlash(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const order=shuffle(set.cards);
+  let i=0,flipped=false,know=0,learn=0;
+
+  function draw(){
+    const card=order[i];
+    app.innerHTML=`
+      <div class="topbar">
+        <span class="label">Card ${i+1} of ${order.length}</span>
+        <button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>✕ Exit</button>
+      </div>
+      <div class="bar"><i style="width:${(i/order.length)*100}%"></i></div>
+      <div class="flip-outer" id="flip-outer">
+        <div class="flip" id="flip">
+          <div class="face front">
+            <span class="kicker" style="color:var(--dim)">${set.kind==="verb"?"Verb":"Word"}</span>
+            <span class="term-lg">${esc(card.term)}</span>
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+              <button class="speak" id="say-front">🔊 Hear it</button>
+              ${canRecognize()?`<button class="speak" id="say-it" style="background:var(--clay);color:#fff;border-color:var(--clay)">🎤 Say it</button>`:""}
+            </div>
+            <span id="say-result" style="min-height:17px;margin-top:8px;font-size:12.5px;font-weight:600"></span>
+            <span style="margin-top:6px;font-size:12.5px;color:var(--dim)">tap card to flip</span>
+          </div>
+          <div class="face back">
+            <span class="kicker" style="color:rgba(255,255,255,.7)">${set.kind==="verb"?"Past tense":"Meaning"}</span>
+            ${meaningHTML(card,"lg")}
+            ${card.ex?`<div style="margin-top:14px;font-size:13.5px;font-style:italic;color:rgba(255,255,255,.92);max-width:34ch;line-height:1.5">\u201c${esc(card.ex)}\u201d</div>`:""}
+            ${canSpeak()?`<button class="speak" id="say-back" style="margin-top:14px;background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.55)">🔊 Hear it</button>`:""}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-learn" id="b-learn">Still learning</button>
+        <button class="btn btn-know" id="b-know">I know this</button>
+      </div>`;
+    $("flip-outer").onclick=()=>{flipped=!flipped;$("flip").classList.toggle("on",flipped);};
+    const sf=$("say-front"); if(sf) sf.onclick=(e)=>{ e.stopPropagation(); speak(order[i].term); };
+    const sb=$("say-back"); if(sb) sb.onclick=(e)=>{ e.stopPropagation(); speak(order[i].def); };
+    const si=$("say-it");
+    if(si) si.onclick=(e)=>{
+      e.stopPropagation();
+      const res=$("say-result");
+      si.textContent="🎤 Listening…"; si.disabled=true;
+      res.style.color="var(--dim)"; res.textContent="";
+      listenOnce(
+        (alts)=>{
+          si.textContent="🎤 Say it"; si.disabled=false;
+          if(speechMatches(order[i].term,alts)){
+            res.style.color="var(--moss)"; res.textContent="\u2713 Nice \u2014 that sounded right!";
+          } else {
+            res.style.color="var(--clay)"; res.textContent="I heard: \u201c"+(alts[0]||"")+"\u201d \u2014 try again";
+          }
+        },
+        (err)=>{
+          si.textContent="🎤 Say it"; si.disabled=false; res.style.color="var(--clay)";
+          res.textContent = (err==="not-allowed"||err==="service-not-allowed") ? "Allow microphone access to practise speaking."
+            : err==="no-speech" ? "Didn't catch that \u2014 tap and try again."
+            : "Speech practice needs Chrome or Safari with a mic.";
+        }
+      );
+    };
+    $("b-learn").onclick=()=>mark(false);
+    $("b-know").onclick=()=>mark(true);
+  }
+  function mark(knows){
+    bumpProg(set.id,order[i].term,knows);
+    knows?know++:learn++;
+    if(i+1>=order.length){
+      showResult({
+        title:"Flashcards complete",
+        lines:[`${know} marked as known`,`${learn} still learning`],
+        setId:set.id,
+      });
+    } else {
+      flipped=false;i++;draw();
+    }
+  }
+  draw();
+}
+
+/* ---- QUIZ ---- */
+function renderQuiz(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const order=shuffle(set.cards);
+  const optionSets=order.map(c=>{
+    const wrong=shuffle(set.cards.filter(x=>x.term!==c.term)).slice(0,3);
+    return shuffle([c,...wrong]);
+  });
+  let i=0,score=0,picked=false;
+
+  function draw(){
+    const card=order[i],opts=optionSets[i];
+    let optsHtml="";
+    opts.forEach((o,idx)=>{
+      optsHtml+=`<button class="opt" id="opt-${idx}" data-term="${esc(o.term)}">${optLabel(o)}</button>`;
+    });
+    app.innerHTML=`
+      <div class="topbar">
+        <span class="label">Question ${i+1} of ${order.length}</span>
+        <button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>✕ Exit</button>
+      </div>
+      <div class="bar"><i style="width:${(i/order.length)*100}%;background:var(--clay)"></i></div>
+      <div class="qcard rise" style="text-align:center">
+        <span class="kicker" style="color:var(--dim)">${set.kind==="verb"?"What is the past tense?":"Which word is this?"}</span>
+        ${set.kind==="verb"?`<div class="qword">${esc(card.term)}</div>`:questionHTML(card)}
+        <div class="opts" style="margin-top:20px;text-align:left">${optsHtml}</div>
+      </div>
+      <div id="next-slot"></div>`;
+    opts.forEach((o,idx)=>{ $("opt-"+idx).onclick=()=>choose(idx,opts); });
+  }
+  function optLabel(o){
+    return set.kind==="verb"?esc(o.def):esc(o.term);
+  }
+  function choose(idx,opts){
+    if(picked)return;
+    picked=true;
+    const chosen=opts[idx],card=order[i];
+    const correct=chosen.term===card.term;
+    if(correct)score++;
+    bumpProg(set.id,card.term,correct);
+    opts.forEach((o,k)=>{
+      const el=$("opt-"+k);
+      if(o.term===card.term){el.classList.add("correct");el.innerHTML+=' <span class="tick">✓</span>';}
+      else if(k===idx){el.classList.add("wrong");el.innerHTML+=' <span class="tick">✕</span>';}
+    });
+    const last=i+1>=order.length;
+    $("next-slot").innerHTML=`<button class="btn-dark rise" id="next-btn">${last?"See results":"Next question"}</button>`;
+    $("next-btn").onclick=()=>{
+      if(last){
+        showResult({
+          title:"Quiz complete",
+          lines:[`You scored ${score} out of ${order.length}`],
+          setId:set.id,
+          report:{setName:set.name,scoreText:score+"/"+order.length},
+        });
+      } else { picked=false;i++;draw(); }
+    };
+  }
+  draw();
+}
+
+/* ---- LISTENING (audio of the word -> pick the written word) ---- */
+function renderListen(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const order=shuffle(set.cards);
+  const optionSets=order.map(c=>{
+    const wrong=shuffle(set.cards.filter(x=>x.term!==c.term)).slice(0,3);
+    return shuffle([c,...wrong]);
+  });
+  let i=0,score=0,picked=false;
+
+  function draw(){
+    const card=order[i],opts=optionSets[i];
+    let optsHtml="";
+    opts.forEach((o,idx)=>{
+      optsHtml+=`<button class="opt" id="opt-${idx}" data-term="${esc(o.term)}">${esc(o.term)}</button>`;
+    });
+    const noAudio = canSpeak() ? "" : `<p class="lead" style="font-size:12.5px;color:var(--clay);margin:8px 0 0">Audio isn't available on this browser — try Chrome or Safari.</p>`;
+    app.innerHTML=`
+      <div class="topbar">
+        <span class="label">Word ${i+1} of ${order.length}</span>
+        <button class="exit" onclick='go({name:"modes",setId:"${set.id}"})'>✕ Exit</button>
+      </div>
+      <div class="bar"><i style="width:${(i/order.length)*100}%;background:var(--slate)"></i></div>
+      <div class="qcard rise" style="text-align:center">
+        <span class="kicker" style="color:var(--dim)">Listen, then choose the word</span>
+        <button class="listen-big" id="listen-btn" aria-label="Play the word">🔊<span>Tap to hear</span></button>
+        ${noAudio}
+        <div class="opts" style="margin-top:20px;text-align:left">${optsHtml}</div>
+      </div>
+      <div id="next-slot"></div>`;
+    $("listen-btn").onclick=()=>speak(card.term);
+    speak(card.term);  // auto-play on arrival
+    opts.forEach((o,idx)=>{ $("opt-"+idx).onclick=()=>choose(idx,opts); });
+  }
+  function choose(idx,opts){
+    if(picked)return;
+    picked=true;
+    const chosen=opts[idx],card=order[i];
+    const correct=chosen.term===card.term;
+    if(correct)score++;
+    bumpProg(set.id,card.term,correct);
+    opts.forEach((o,k)=>{
+      const el=$("opt-"+k);
+      if(o.term===card.term){el.classList.add("correct");el.innerHTML+=' <span class="tick">✓</span>';}
+      else if(k===idx){el.classList.add("wrong");el.innerHTML+=' <span class="tick">✕</span>';}
+    });
+    const last=i+1>=order.length;
+    $("next-slot").innerHTML=`<button class="btn-dark rise" id="next-btn">${last?"See results":"Next word"}</button>`;
+    $("next-btn").onclick=()=>{
+      if(last){
+        showResult({
+          title:"Listening complete",
+          lines:[`You scored ${score} out of ${order.length}`],
+          setId:set.id,
+        });
+      } else { picked=false;i++;draw(); }
+    };
+  }
+  draw();
+}
+
+/* ---- MATCHING ----
+   Covers the WHOLE set. The words are split into consecutive rounds of at
+   most six pairs (evenly sized, so 20 words run as 5+5+5+5). When a round is
+   cleared the next one loads automatically, and the counter and progress bar
+   track the entire set — every word in the set gets matched before the
+   results screen appears.
+   To change the tiles-per-screen, edit MAX_PAIRS below. */
+function renderMatch(){
+  const set=SETS.find(s=>s.id===STATE.setId);
+  const MAX_PAIRS=6;
+  const all=shuffle(set.cards);
+  const nRounds=Math.max(1,Math.ceil(all.length/MAX_PAIRS));
+  const rounds=[];
+  let cut=0;
+  for(let r=0;r<nRounds;r++){
+    const size=Math.ceil((all.length-cut)/(nRounds-r));
+    rounds.push(all.slice(cut,cut+size));
+    cut+=size;
+  }
+  let round=0,doneTotal=0,ticks=0;
+  let pool=rounds[0],terms=shuffle(pool),defs=shuffle(pool);
+  let selTerm=null,selDef=null,matched={},lock=false;
+  const timer=setInterval(()=>{ticks++;const t=$("match-time");if(t)t.textContent=ticks+"s";},1000);
+
+  function draw(){
+    let tHtml="",dHtml="";
+    terms.forEach((c,idx)=>{
+      const cls="tile term"+(matched[c.term]?" matched":"")+(selTerm===c.term?" sel":"");
+      tHtml+=`<button class="${cls}" id="t-${idx}" ${matched[c.term]?"disabled":""}>${esc(c.term)}</button>`;
+    });
+    defs.forEach((c,idx)=>{
+      const cls="tile def"+(matched[c.term]?" matched":"")+(selDef===c.term?" sel":"");
+      const inner=setIsVisual(set) ? meaningHTML(c,"sm") : esc(c.def);
+      dHtml+=`<button class="${cls}" id="d-${idx}" ${matched[c.term]?"disabled":""}>${inner}</button>`;
+    });
+    const done=doneTotal+Object.keys(matched).length;
+    app.innerHTML=`
+      <div class="topbar">
+        <span class="label">${done} of ${all.length} matched · <span id="match-time">${ticks}s</span></span>
+        <button class="exit" onclick='exitMatch("${set.id}")'>✕ Exit</button>
+      </div>
+      <div class="bar"><i style="width:${(done/all.length)*100}%;background:var(--gold)"></i></div>
+      <p class="lead" style="margin:14px 0 4px;font-size:13.5px">Round ${round+1} of ${nRounds} · Tap a word, then tap its meaning. Wrong pairs flash and reset.</p>
+      <div class="match-grid">
+        <div class="match-col">${tHtml}</div>
+        <div class="match-col">${dHtml}</div>
+      </div>`;
+    terms.forEach((c,idx)=>{ const el=$("t-"+idx); if(el&&!matched[c.term]) el.onclick=()=>pick("term",c.term); });
+    defs.forEach((c,idx)=>{ const el=$("d-"+idx); if(el&&!matched[c.term]) el.onclick=()=>pick("def",c.term); });
+  }
+  function pick(kind,term){
+    if(lock)return;
+    if(kind==="term")selTerm=term; else selDef=term;
+    draw();
+    if(selTerm&&selDef){
+      if(selTerm===selDef){
+        matched[selTerm]=true;
+        bumpProg(set.id,selTerm,true);
+        selTerm=selDef=null;
+        draw();
+        if(Object.keys(matched).length===pool.length){
+          doneTotal+=pool.length;
+          if(round+1<nRounds){
+            // round cleared — load the next group of words automatically
+            lock=true;
+            setTimeout(()=>{
+              round++;
+              pool=rounds[round];
+              terms=shuffle(pool); defs=shuffle(pool);
+              matched={}; selTerm=selDef=null; lock=false;
+              draw();
+            },700);
+          } else {
+            clearInterval(timer);
+            showResult({
+              title:"All matched",
+              lines:[`Finished in ${ticks} second${ticks===1?"":"s"}`,`All ${all.length} words in this set`],
+              setId:set.id,
+            });
+          }
+          return;
+        }
+      } else {
+        lock=true;
+        const ti=terms.findIndex(c=>c.term===selTerm);
+        const di=defs.findIndex(c=>c.term===selDef);
+        if($("t-"+ti))$("t-"+ti).classList.add("bad");
+        if($("d-"+di))$("d-"+di).classList.add("bad");
+        setTimeout(()=>{selTerm=selDef=null;lock=false;draw();},560);
+      }
+    }
+  }
+  window.exitMatch=(id)=>{clearInterval(timer);go({name:"modes",setId:id});};
+  draw();
+}
+
+/* ---- RESULT ---- */
+function showResult(o){
+  // Report once, when the student leaves the result screen, so the name they
+  // type below is included. Returning students (name already known) report
+  // immediately so a completed score is never lost.
+  let sent=false;
+  function submitOnce(){
+    if(sent || !o.report) return;
+    sent=true;
+    reportScore(o.report.setName,o.report.scoreText);
+  }
+  let nameField="";
+  if(FORM_CONFIG.enabled&&o.report){
+    nameField=`<div style="margin:18px auto 0;max-width:300px;text-align:left">
+      <label style="font-size:12.5px;color:var(--dim);font-weight:600">Your name (so your teacher sees this)</label>
+      <input class="name-input" id="stu-name" placeholder="Type your name"
+        value="${esc(window.__studentName||"")}" />
+    </div>`;
+  }
+  let lines=o.lines.map(l=>`<p>${esc(l)}</p>`).join("");
+  app.innerHTML=`<div class="result rise">
+    <div class="check">✓</div>
+    <h2>${esc(o.title)}</h2>
+    ${lines}
+    ${nameField}
+    <button class="btn-dark" id="res-modes" style="max-width:300px;margin:24px auto 0">Back to study modes</button>
+    <div><button class="reset" id="res-home">Choose a different set</button></div>
+  </div>`;
+  if(FORM_CONFIG.enabled&&o.report){
+    const ni=$("stu-name");
+    if(ni) ni.oninput=()=>{
+      window.__studentName=ni.value;
+      try{ localStorage.setItem("sqa_student_name",ni.value); }catch(e){}
+    };
+    if((window.__studentName||"").trim()) submitOnce();
+  }
+  $("res-modes").onclick=()=>{ submitOnce(); go({name:"modes",setId:o.setId}); };
+  $("res-home").onclick=()=>{ submitOnce(); go({name:"home"}); };
+}
+
+/* ---- 8-WEEK STUDY PLAN VIEW ---- */
+function setById(id){ return SETS.find(s=>s.id===id); }
+function getWeek(){ try{ return Math.min(7,Math.max(1, parseInt(localStorage.getItem("sqa_convtrack3_week")||"1",10)||1)); }catch(e){ return 1; } }
+function setWeek(n){ try{ localStorage.setItem("sqa_convtrack3_week",String(n)); }catch(e){} go({name:"plan"}); }
+function planTotals(ids){ let total=0,learned=0; ids.forEach(id=>{const s=setById(id); if(s){ total+=s.cards.length; learned+=learnedCount(s); }}); return {total,learned}; }
+function meterHTML(learned,total,color){
+  const pct=total?Math.round(learned/total*100):0;
+  return `<div class="bar" style="margin-top:8px"><i style="width:${pct}%;background:${color}"></i></div>
+    <div style="font-size:12px;color:var(--dim);margin-top:5px">${learned} of ${total} words learned \u00b7 ${pct}%</div>`;
+}
+function renderPlan(){
+  $("head-pill").textContent="7-Week Plan";
+  const wk=getWeek(), plan=C1_WEEKS[wk-1];
+  const grand=planTotals(SETS.map(s=>s.id)), goal=planTotals(plan.learn);
+
+  let sel="";
+  C1_WEEKS.forEach(w=>{
+    const on=w.wk===wk;
+    sel+=`<button onclick='setWeek(${w.wk})' style="flex:1;min-width:34px;padding:9px 0;border-radius:10px;border:1.5px solid ${on?'var(--moss)':'var(--line)'};background:${on?'var(--moss)':'var(--paper)'};color:${on?'#fff':'var(--ink)'};font-weight:700;font-family:var(--font-display);font-size:15px">${w.wk}</button>`;
+  });
+
+  let newCards="";
+  plan.learn.forEach(id=>{
+    const s=setById(id); if(!s) return;
+    const t=planTotals([id]);
+    newCards+=`<div class="set-card" style="display:block;cursor:default">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span class="set-name">${esc(s.name)}</span>
+        <span class="set-meta" style="margin-left:auto">${s.cards.length} words</span>
+      </div>
+      ${meterHTML(t.learned,t.total,"var(--moss)")}
+      <button class="btn-dark" style="margin-top:12px;padding:11px" onclick='go({name:"modes",setId:"${s.id}"})'>Study this set \u2192</button>
+    </div>`;
+  });
+
+  let rev="";
+  if(plan.review.length){
+    plan.review.forEach(id=>{
+      const s=setById(id); if(!s) return;
+      const t=planTotals([id]);
+      rev+=`<button class="mode-card" style="padding:13px 16px" onclick='go({name:"modes",setId:"${s.id}"})'>
+        <span><span class="mode-name" style="font-size:15px">${esc(s.name)}</span>
+        <span class="mode-desc">${t.learned}/${t.total} learned \u00b7 tap to review</span></span>
+        <span class="set-arrow" style="margin-left:auto;color:var(--slate)">\u21bb</span>
+      </button>`;
+    });
+  } else {
+    rev=`<p class="lead" style="font-size:13.5px;margin:0">No review yet \u2014 this is your first week. Enjoy the fresh start.</p>`;
+  }
+
+  let road="";
+  C1_WEEKS.forEach(w=>{
+    const names=w.learn.map(id=>{const s=setById(id);return s?s.name:id;}).join(", ");
+    const cnt=planTotals(w.learn).total, on=w.wk===wk;
+    road+=`<div style="display:flex;gap:12px;align-items:flex-start;padding:11px 8px;border-bottom:1px solid var(--line);${on?'background:var(--moss-lt);border-radius:8px':''}">
+      <span style="flex:0 0 50px;font-family:var(--font-display);font-weight:700;color:${on?'var(--moss)':'var(--dim)'}">Wk ${w.wk}</span>
+      <span style="flex:1;font-size:13.5px;line-height:1.45"><b>${esc(names)}</b><span style="color:var(--dim)"> \u00b7 ${cnt} new${w.review.length?` \u00b7 review ${w.review.length} earlier set${w.review.length>1?'s':''}`:''}</span></span>
+    </div>`;
+  });
+
+  app.innerHTML=`
+    <div class="topbar rise">
+      <span class="label">7-week study plan</span>
+      <button class="exit" onclick='go({name:"home"})'>\u2190 All sets</button>
+    </div>
+    <h1 class="page rise" style="margin-bottom:6px">Your 7-week goal</h1>
+    <p class="lead rise">Learn all ${grand.total} words in 7 weeks \u2014 about ${Math.round(grand.total/7)} a week. Each week adds a little new vocabulary and reviews what came before, which is how the words stick.</p>
+
+    <div class="rise" style="background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px">
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:600">Overall progress</div>
+      ${meterHTML(grand.learned,grand.total,"var(--moss)")}
+    </div>
+
+    <h2 class="rise" style="font-family:var(--font-display);font-size:18px;font-weight:600;margin:26px 0 10px">Pick your week</h2>
+    <div class="rise" style="display:flex;gap:6px">${sel}</div>
+
+    <h2 class="rise" style="font-family:var(--font-display);font-size:18px;font-weight:600;margin:24px 0 4px">Week ${wk} \u00b7 new vocabulary</h2>
+    <p class="lead rise" style="margin-bottom:12px;font-size:13.5px">This week's goal: ${goal.total} new words \u2014 ${goal.learned} learned so far.</p>
+    <div class="rise">${newCards}</div>
+    ${meterHTML(goal.learned,goal.total,"var(--clay)")}
+
+    <h2 class="rise" style="font-family:var(--font-display);font-size:18px;font-weight:600;margin:26px 0 10px">Week ${wk} \u00b7 review</h2>
+    <div class="rise mode-grid">${rev}</div>
+
+    <h2 class="rise" style="font-family:var(--font-display);font-size:18px;font-weight:600;margin:28px 0 6px">The full roadmap</h2>
+    <div class="rise" style="background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:6px 16px">${road}</div>
+
+    <div class="note rise">
+      <strong style="font-family:var(--font-display)">How "learned" works:</strong>
+      a word turns green once you have answered it correctly ${LEARN_TARGET} times across the study modes. Short daily sessions of 15\u201320 minutes work best \u2014 revisit each set a day or two later, then again the next week.
+    </div>`;
+}
+
+/* ---- start ---- */
+try{ window.__studentName = localStorage.getItem("sqa_student_name") || ""; }catch(e){}
+render();
+</script>
+</body>
+</html>
